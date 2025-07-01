@@ -41,6 +41,12 @@
     name: nvidia-container-toolkit
     state: present
 
+- name: Add non-free repository to sources list
+  ansible.builtin.apt_repository:
+    repo: "deb http://deb.debian.org/debian/  main contrib non-free non-free-firmware"
+    state: present
+    filename: non-free
+
 - name: Install Nvidia drivers
   ansible.builtin.apt:
     update_cache: yes
