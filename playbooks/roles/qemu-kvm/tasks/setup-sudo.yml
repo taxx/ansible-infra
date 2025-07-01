@@ -1,0 +1,27 @@
+---
+- name: Ensure sudo package is installed
+  ansible.builtin.apt:
+    name: sudo
+    state: present
+    update_cache: yes
+
+- name: Ensure user tobbe exists
+  ansible.builtin.user:
+    name: tobbe
+    shell: /bin/bash
+    state: present
+    create_home: yes
+
+- name: Add tobbe to sudo group
+  ansible.builtin.user:
+    name: tobbe
+    groups: sudo
+    append: yes
+
+- name: Allow tobbe to use sudo without password
+  ansible.builtin.copy:
+    dest: /etc/sudoers.d/tobbe
+    content: "tobbe ALL=(ALL) NOPASSWD: ALL\n"
+    owner: root
+    group: root
+    mode: '0440'

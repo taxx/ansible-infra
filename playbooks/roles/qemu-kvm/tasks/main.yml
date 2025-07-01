@@ -37,3 +37,6 @@
 
 - name: Set up Cockpit for managing virtual machines
   ansible.builtin.include_tasks: setup-cockpit.yml
+
+- name: Set up sudo for user tobbe
+  ansible.builtin.include_tasks: setup-sudo.yml
