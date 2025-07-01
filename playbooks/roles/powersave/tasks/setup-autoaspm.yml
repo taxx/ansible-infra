@@ -1,0 +1,34 @@
+---
+- name: Install python3
+  ansible.builtin.apt:
+    name: python3
+    state: present
+    update_cache: yes
+
+- name: Copy autoaspm.py script
+  ansible.builtin.copy:
+    src: files/autoaspm.py
+    dest: /usr/local/bin/autoaspm.py
+    mode: '0755'
+
+- name: Create autoaspm systemd service
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/autoaspm.service
+    content: |
+      [Unit]
+      Description=Run autoaspm.py script at startup
+      After=multi-user.target
+
+      [Service]
+      Type=oneshot
+      ExecStart=/usr/bin/python3 /usr/local/bin/autoaspm.py
+      RemainAfterExit=true
+
+      [Install]
+      WantedBy=multi-user.target
+
+- name: Enable autoaspm service
+  ansible.builtin.systemd:
+    name: autoaspm.service
+    enabled: yes
+    daemon_reload: yes

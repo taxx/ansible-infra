@@ -92,3 +92,6 @@
     name: disable-cursor-blink.service
     enabled: yes
     daemon_reload: yes
+
+- name: Setup AutoASPM
+  ansible.builtin.include_tasks: setup-autoaspm.yml
