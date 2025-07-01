@@ -28,6 +28,4 @@
   shell: |
     ifdown {{ bridge_interface }} || true
     ifup {{ bridge_interface }}
-  args:
-    warn: false
-
+  warn: false
