@@ -1,0 +1,36 @@
+---
+- name: Install virtualization packages
+  ansible.builtin.apt:
+    name:
+      - qemu-kvm
+      - libvirt-daemon-system
+      - libvirt-clients
+      - virtinst
+      - bridge-utils
+      - virt-manager
+    state: present
+    update_cache: yes
+
+- name: Ensure libvirtd service is enabled and running
+  ansible.builtin.systemd:
+    name: libvirtd
+    state: started
+    enabled: true
+
+# If running as other user than root, ensure the user is in the libvirt group
+# - name: Add current user to libvirt group
+#   ansible.builtin.user:
+#     name: "{{ ansible_user_id }}"
+#     groups: libvirt
+#     append: yes
+
+- name: Ensure iptables rules for br0 are present in /etc/crontab
+  ansible.builtin.blockinfile:
+    path: /etc/crontab
+    block: |
+      @reboot root iptables -I FORWARD -i br0 -j ACCEPT
+      @reboot root iptables -I FORWARD -o br0 -j ACCEPT
+    marker: "# {mark} ANSIBLE MANAGED BLOCK: BRIDGE FORWARDING"
+
+- name: Set up network bridge
+  ansible.builtin.include_tasks: setup-bridge.yml    

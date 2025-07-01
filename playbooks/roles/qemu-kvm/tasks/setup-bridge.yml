@@ -1,0 +1,32 @@
+- name: Ensure bridge-utils is installed
+  ansible.builtin.apt:
+    name: bridge-utils
+    state: present
+    update_cache: yes
+
+- name: Create static bridge configuration for br0
+  ansible.builtin.copy:
+    dest: /etc/network/interfaces.d/br0.cfg
+    content: |
+      auto br0
+      iface br0 inet static
+          address {{ bridge_config.address }}
+          netmask {{ bridge_config.netmask }}
+          gateway {{ bridge_config.gateway }}
+          {% if bridge_config.dns_nameservers is defined %}
+          dns-nameservers {{ bridge_config.dns_nameservers | join(' ') }}
+          {% endif %}
+          bridge_ports {{ bridge_interface }}
+          bridge_stp off
+          bridge_fd 0
+          bridge_maxwait 0
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Restart networking to bring up br0
+  ansible.builtin.shell: |
+    ifdown {{ bridge_interface }} || true
+    ifup br0
+  args:
+    warn: false
