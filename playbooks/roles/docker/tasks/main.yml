@@ -1,18 +1,20 @@
 ---
-- name: Ensure gnupg is installed
+- name: Ensure dependencies are installed
   ansible.builtin.apt:
     name: gnupg
     state: present
     update_cache: yes
 
-- name: Add Docker GPG key
-  ansible.builtin.apt_key:
+- name: Download Docker GPG key
+  ansible.builtin.get_url:
     url: https://download.docker.com/linux/debian/gpg
-    state: present
+    dest: /usr/share/keyrings/docker-archive-keyring.gpg
+    mode: '0644'
 
-- name: Add Docker repo
+- name: Add Docker APT repository
   ansible.builtin.apt_repository:
-    repo: "deb [arch=amd64] https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable"
+    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable"
+    filename: docker
     state: present
 
 - name: Install Docker packages
@@ -26,8 +28,8 @@
     state: present
     update_cache: yes
 
-- name: Restart Docker
+- name: Ensure Docker service is running and enabled
   ansible.builtin.systemd:
     name: docker
-    state: restarted
+    state: started
     enabled: true
