@@ -11,7 +11,8 @@ Create the `.env.yml` file in the playbooks folder _(rename the `.env.example.ym
 
 Run the playbook of choice, example:
 ```bash
-ansible-playbook -i "localhost," -c local playbooks/debian-server.yml
+ansible-playbook -i inventory/hosts.yml -c local playbooks/debian-server.yml
+#ansible-playbook -i "localhost," -c local playbooks/debian-server.yml
 #ansible-playbook -i inventories/osiris/hosts.yml playbooks/debian-server.yml
 ```
 
