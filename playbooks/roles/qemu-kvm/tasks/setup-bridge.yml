@@ -27,6 +27,6 @@
 - name: Restart networking to bring up br0
   ansible.builtin.shell: |
     ifdown {{ bridge_interface }} || true
-    ifup br0
+    ifup {{ bridge_interface }}
   args:
     warn: false
