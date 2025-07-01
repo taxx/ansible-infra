@@ -12,6 +12,7 @@
 - name: Install Docker packages
   ansible.builtin.apt:
     name:
+      - gpg
       - docker-ce
       - docker-ce-cli
       - containerd.io
