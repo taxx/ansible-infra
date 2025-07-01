@@ -24,6 +24,16 @@
     group: root
     mode: '0644'
 
+- name: Configure physical interface {{ bridge_interface }} to manual mode
+  ansible.builtin.copy:
+    dest: /etc/network/interfaces.d/{{ bridge_interface }}.cfg
+    content: |
+      allow-hotplug {{ bridge_interface }}
+      iface {{ bridge_interface }} inet manual
+    owner: root
+    group: root
+    mode: '0644'
+
 - name: Restart networking to bring up br0
   shell: |
     ifdown {{ bridge_interface }} || true
