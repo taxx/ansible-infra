@@ -4,6 +4,18 @@
     state: present
     update_cache: yes
 
+- name: Ensure /etc/network/interfaces.d directory exists
+  ansible.builtin.file:
+    path: /etc/network/interfaces.d
+    state: directory       
+
+- name: Disable {{ bridge_interface }} DHCP config in /etc/network/interfaces
+  ansible.builtin.lineinfile:
+    path: /etc/network/interfaces
+    regexp: '^(allow-hotplug {{ bridge_interface }}|iface {{ bridge_interface }} inet dhcp)'
+    state: absent
+    backrefs: yes
+
 - name: Create static bridge configuration for br0
   ansible.builtin.copy:
     dest: /etc/network/interfaces.d/br0.cfg
@@ -37,4 +49,6 @@
 - name: Restart networking to bring up br0
   shell: |
     ifdown {{ bridge_interface }} || true
-    ifup {{ bridge_interface }}
+    ifup {{ bridge_interface }} || true
+    ifdown br0 || true
+    ifup br0
