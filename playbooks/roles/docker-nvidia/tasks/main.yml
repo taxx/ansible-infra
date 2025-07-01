@@ -41,6 +41,15 @@
     name: nvidia-container-toolkit
     state: present
 
+- name: Install Nvidia drivers
+  ansible.builtin.apt:
+    update_cache: yes
+    name:
+      - firmware-misc-nonfree
+      - nvidia-driver
+      - nvtop
+    state: latest
+
 - name: Restart Docker
   systemd:
     name: docker
