@@ -25,8 +25,9 @@
     mode: '0644'
 
 - name: Restart networking to bring up br0
-  ansible.builtin.shell: |
+  shell: |
     ifdown {{ bridge_interface }} || true
     ifup {{ bridge_interface }}
   args:
     warn: false
+
