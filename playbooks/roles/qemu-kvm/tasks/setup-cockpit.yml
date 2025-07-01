@@ -12,3 +12,20 @@
     name: cockpit.socket
     enabled: true
     state: started
+
+- name: Enable root login in Cockpit
+  ansible.builtin.blockinfile:
+    path: /etc/cockpit/cockpit.conf
+    block: |
+      [WebService]
+      AllowRoot=true
+    create: yes
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Restart Cockpit service to apply config
+  ansible.builtin.systemd:
+    name: cockpit.socket
+    state: restarted
+    enabled: true
