@@ -4,20 +4,33 @@
     name:
       - curl
       - ca-certificates
+      - gnupg
     state: present
     update_cache: yes
 
-- name: Download NVIDIA GPG key
+- name: Create keyrings directory (if missing)
+  file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+
+- name: Download NVIDIA GPG key (ASCII armored)
   get_url:
     url: https://nvidia.github.io/libnvidia-container/gpgkey
-    dest: /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
+    dest: /tmp/nvidia.asc
     mode: '0644'
+
+- name: Convert NVIDIA GPG key to GPG binary format
+  command: >
+    gpg --dearmor -o /etc/apt/keyrings/nvidia-container-toolkit-keyring.gpg /tmp/nvidia.asc
+  args:
+    creates: /etc/apt/keyrings/nvidia-container-toolkit-keyring.gpg
 
 - name: Create NVIDIA APT repo list with signed-by (workaround for Debian 12)
   copy:
     dest: /etc/apt/sources.list.d/nvidia-container-toolkit.list
     content: |
-      deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://nvidia.github.io/libnvidia-container/stable/deb/amd64 /
+      deb [signed-by=/etc/apt/keyrings/nvidia-container-toolkit-keyring.gpg] https://nvidia.github.io/libnvidia-container/stable/deb/amd64 /
 
 - name: Update apt cache
   apt:
