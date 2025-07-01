@@ -14,6 +14,7 @@
   roles:
     - common
     - docker
+    - nvidia
     - mergerfs
     - snapraid
     - powersave
