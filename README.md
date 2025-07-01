@@ -9,7 +9,7 @@ apt install ansible -y
 
 Run the playbook of choice, example:
 ```bash
-ansible-playbook -i "localhost," -c local playbooks/osiris.yml
-#ansible-playbook -i inventories/osiris/hosts.yml playbooks/osiris.yml
+ansible-playbook -i "localhost," -c local playbooks/debian-server.yml
+#ansible-playbook -i inventories/osiris/hosts.yml playbooks/debian-server.yml
 ```
 

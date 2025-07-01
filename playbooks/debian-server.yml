@@ -1,5 +1,5 @@
 ---
-- name: Setup osiris - The cottage server (Debian 12)
+- name: Setup a default debian server
   hosts: all
   become: true
 
