@@ -1,4 +1,10 @@
 ---
+- name: Ensure gnupg is installed
+  ansible.builtin.apt:
+    name: gnupg
+    state: present
+    update_cache: yes
+
 - name: Add Docker GPG key
   ansible.builtin.apt_key:
     url: https://download.docker.com/linux/debian/gpg
@@ -12,7 +18,6 @@
 - name: Install Docker packages
   ansible.builtin.apt:
     name:
-      - gpg
       - docker-ce
       - docker-ce-cli
       - containerd.io
