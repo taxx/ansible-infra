@@ -13,18 +13,11 @@
     dest: /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
     mode: '0644'
 
-- name: Download NVIDIA container toolkit repo list
-  get_url:
-    url: https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list
+- name: Create NVIDIA APT repo list with signed-by (workaround for Debian 12)
+  copy:
     dest: /etc/apt/sources.list.d/nvidia-container-toolkit.list
-    mode: '0644'
-
-- name: Update repo list to include signed-by in NVIDIA repo
-  ansible.builtin.lineinfile:
-    path: /etc/apt/sources.list.d/nvidia-container-toolkit.list
-    regexp: '^deb https://'
-    line: 'deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://nvidia.github.io/libnvidia-container/stable/deb/$(ARCH) /'
-    backrefs: yes
+    content: |
+      deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://nvidia.github.io/libnvidia-container/stable/deb/amd64 /
 
 - name: Update apt cache
   apt:
@@ -32,8 +25,7 @@
 
 - name: Install NVIDIA container toolkit
   apt:
-    name:
-      - nvidia-container-toolkit
+    name: nvidia-container-toolkit
     state: present
 
 - name: Restart Docker
