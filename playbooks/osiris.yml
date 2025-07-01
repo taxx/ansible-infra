@@ -1,0 +1,19 @@
+---
+- name: Setup osiris - The cottage server (Debian 12)
+  hosts: all
+  become: true
+
+  vars:
+    #example: "value"
+
+  pre_tasks:
+    - name: Load sensitive vars from external file
+      include_vars: .env.yml
+      when: lookup('file', '.env.yml', errors='ignore') is defined
+
+  roles:
+    - common
+    - docker
+    - mergerfs
+    - snapraid
+    - powersave

@@ -1,0 +1,5 @@
+---
+- name: Install SnapRAID from APT
+  apt:
+    name: snapraid
+    state: present

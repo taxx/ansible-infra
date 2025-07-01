@@ -1,0 +1,22 @@
+---
+- name: Ensure base packages are installed
+  apt:
+    name:
+      - mc
+      - screen
+      - hddtemp
+      - smartmontools
+      - curl
+      - git
+      - lsb-release
+      - apt-transport-https
+      - ca-certificates
+    state: present
+    update_cache: yes
+
+- name: Configure cron email redirection for root
+  lineinfile:
+    path: /etc/crontab
+    regexp: '^MAILTO='
+    line: "MAILTO={{ cron_email }}"
+    create: yes

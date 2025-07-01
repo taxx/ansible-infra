@@ -1,0 +1,94 @@
+---
+- name: Add pcie_aspm=force to GRUB_CMDLINE_LINUX_DEFAULT
+  lineinfile:
+    path: /etc/default/grub
+    regexp: '^GRUB_CMDLINE_LINUX_DEFAULT='
+    line: 'GRUB_CMDLINE_LINUX_DEFAULT="quiet pcie_aspm=force"'
+  notify: update grub
+
+- name: Create ASPM policy script
+  copy:
+    dest: /usr/local/bin/set-pcie-aspm.sh
+    mode: '0755'
+    content: |
+      #!/bin/bash
+      echo powersave > /sys/module/pcie_aspm/parameters/policy
+
+- name: Create ASPM systemd unit
+  copy:
+    dest: /etc/systemd/system/set-pcie-aspm.service
+    content: |
+      [Unit]
+      Description=Set PCIe ASPM to powersave
+      After=multi-user.target
+
+      [Service]
+      Type=oneshot
+      ExecStart=/usr/local/bin/set-pcie-aspm.sh
+      RemainAfterExit=true
+
+      [Install]
+      WantedBy=multi-user.target
+
+- name: Enable ASPM service
+  systemd:
+    name: set-pcie-aspm.service
+    enabled: yes
+    daemon_reload: yes
+
+- name: Install powertop
+  apt:
+    name: powertop
+    state: present
+
+- name: Create Powertop service
+  copy:
+    dest: /etc/systemd/system/powertop.service
+    content: |
+      [Unit]
+      Description=Powertop tunings
+      After=multi-user.target
+
+      [Service]
+      Type=oneshot
+      ExecStart=/usr/sbin/powertop --auto-tune
+      RemainAfterExit=true
+
+      [Install]
+      WantedBy=multi-user.target
+
+- name: Enable Powertop service
+  systemd:
+    name: powertop.service
+    enabled: yes
+    daemon_reload: yes
+
+- name: Disable cursor blink script
+  copy:
+    dest: /usr/local/bin/disable-cursor-blink.sh
+    mode: '0755'
+    content: |
+      #!/bin/bash
+      echo 0 | tee /sys/class/graphics/fbcon/cursor_blink
+
+- name: Disable cursor blink service
+  copy:
+    dest: /etc/systemd/system/disable-cursor-blink.service
+    content: |
+      [Unit]
+      Description=Disable cursor blink to save power
+      After=multi-user.target
+
+      [Service]
+      Type=oneshot
+      ExecStart=/usr/local/bin/disable-cursor-blink.sh
+      RemainAfterExit=true
+
+      [Install]
+      WantedBy=multi-user.target
+
+- name: Enable cursor blink disable service
+  systemd:
+    name: disable-cursor-blink.service
+    enabled: yes
+    daemon_reload: yes

@@ -1,0 +1,5 @@
+---
+- name: Install MergerFS from APT
+  apt:
+    name: mergerfs
+    state: present
