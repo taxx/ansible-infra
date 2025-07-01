@@ -11,11 +11,10 @@
     dest: /etc/apt/sources.list.d/nvidia-container-toolkit.list
     mode: '0644'
 
-- name: Add signed-by option to NVIDIA repo list
-  ansible.builtin.replace:
-    path: /etc/apt/sources.list.d/nvidia-container-toolkit.list
-    regexp: '^deb https://'
-    replace: 'deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://'
+- name: Add NVIDIA Docker repo GPG key
+  ansible.builtin.apt_key:
+    url: https://nvidia.github.io/nvidia-docker/gpgkey
+    state: present
 
 - name: Install NVIDIA Docker packages
   ansible.builtin.apt:
@@ -23,3 +22,9 @@
       - nvidia-docker2
     state: present
     update_cache: yes
+
+- name: Restart Docker
+  ansible.builtin.systemd:
+    name: docker
+    state: restarted
+    enabled: true
