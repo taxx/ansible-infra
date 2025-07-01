@@ -1,0 +1,9 @@
+- name: Ensure Oh My Zsh is installed for user {{ item }}
+  become_user: "{{ item }}"
+  shell: |
+    export HOME=$(getent passwd {{ item }} | cut -d: -f6)
+    if [ ! -d "$HOME/.oh-my-zsh" ]; then
+      RUNZSH=no CHSH=no KEEP_ZSHRC=yes sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    fi
+  args:
+    executable: /bin/bash

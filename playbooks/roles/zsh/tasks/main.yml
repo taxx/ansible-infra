@@ -9,19 +9,6 @@
     state: present
     update_cache: yes
 
-- name: Install Oh My Zsh for all users
-  block:
-    - name: Ensure Oh My Zsh is installed for user {{ item }}
-      become_user: "{{ item }}"
-      shell: |
-        export HOME=$(getent passwd {{ item }} | cut -d: -f6)
-        if [ ! -d "$HOME/.oh-my-zsh" ]; then
-          RUNZSH=no CHSH=no KEEP_ZSHRC=yes sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-        fi
-      args:
-        executable: /bin/bash
-  loop: "{{ ansible_users }}"
-
 - name: Set Zsh as default shell for users
   user:
     name: "{{ item }}"
@@ -45,3 +32,6 @@
     owner: root
     group: root
     mode: '0644'
+
+- include_tasks: install-oh-my-zsh.yml
+  loop: "{{ ansible_users }}"
