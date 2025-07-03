@@ -1,3 +1,4 @@
+---
 - name: Ensure Oh My Zsh is installed for user {{ item }}
   become_user: "{{ item }}"
   shell: |
