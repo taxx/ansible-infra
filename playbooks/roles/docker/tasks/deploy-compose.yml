@@ -4,6 +4,15 @@
     path: "{{ compose_dest }}"
   register: compose_file
 
+- name: Ensure parent directory exists
+  file:
+    path: "{{ compose_dest | dirname }}"
+    state: directory
+    mode: '0755'
+    owner: root
+    group: root
+  when: not compose_file.stat.exists
+
 - name: Create Docker Compose file if it does not exist
   template:
     src: "{{ compose_src }}"
