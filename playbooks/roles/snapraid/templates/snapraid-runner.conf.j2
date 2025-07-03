@@ -1,8 +1,39 @@
-snapraid_executable = /usr/bin/snapraid
-snapraid_conf = /etc/snapraid.conf
-touch_file = /var/run/snapraid.touch
-lock_file = /tmp/snapraid.lock
-email_to = {{ cron_email }}
-email_from = snapraid@{{ inventory_hostname }}
-smtp_server = {{ smtp_server }}
-smtp_port = {{ smtp_port }}
+[snapraid]
+; path to the snapraid executable
+executable = /usr/bin/snapraid
+; path to the snapraid config to be used
+config = /etc/snapraid.conf
+; abort operation if there are more deletes than this, set to -1 to disable
+deletethreshold = 600
+
+[logging]
+; logfile to write to, leave empty to disable
+file = snapraid.log
+; maximum logfile size in KiB, leave empty for infinite
+maxsize = 5000
+
+[email]
+; when to send an email, comma-separated list of [success, error]
+sendon = success,error
+; set to false to get full program output via email
+short = true
+subject = {{ inventory_hostname }} [SnapRAID] Status Report:
+from = {{ cron_email }}
+to = {{ cron_email }}
+
+[smtp]
+;host = smtp.gmail.com
+host = {{ smtp_server }}
+; leave empty for default port
+port = {{ smtp_port }}
+; set to "true" to activate
+;ssl = true
+ssl = false
+user =
+password =
+
+[scrub]
+; set to true to run scrub after sync
+enabled = true
+percentage = 22
+older-than = 12

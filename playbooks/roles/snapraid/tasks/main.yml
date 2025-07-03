@@ -10,22 +10,15 @@
     dest: /opt/snapraid-runner
     version: master
 
-- name: Symlink snapraid-runner to /usr/local/bin
-  file:
-    src: /opt/snapraid-runner/snapraid-runner
-    dest: /usr/local/bin/snapraid-runner
-    state: link
-    mode: '0755'
-
 - name: Deploy snapraid-runner config
   template:
     src: snapraid-runner.conf.j2
-    dest: /etc/snapraid-runner.conf
+    dest: /opt/snapraid-runner/snapraid-runner.conf
     mode: '0644'
 
 - name: Run snapraid-runner daily
   cron:
     name: "Run snapraid-runner"
-    job: "/usr/local/bin/snapraid-runner"
+    job: "python3 /opt/snapraid-runner/snapraid-runner.py -c /opt/snapraid-runner/snapraid-runner.conf"
     minute: "30"
     hour: "2"
