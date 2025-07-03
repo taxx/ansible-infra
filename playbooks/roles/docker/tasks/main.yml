@@ -45,7 +45,7 @@
 - name: Add users to Docker group
   ansible.builtin.user:
     name: "{{ item }}"
-    group: docker
+    groups: docker
     append: true
   loop: "{{ ansible_users }}"
   when: ansible_users is defined and ansible_users | length > 0
