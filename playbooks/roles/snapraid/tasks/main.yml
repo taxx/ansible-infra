@@ -4,6 +4,12 @@
     name: snapraid
     state: present
 
+- name: Clone snapraid-runner repo
+  git:
+    repo: https://github.com/Chronial/snapraid-runner.git
+    dest: /opt/snapraid-runner
+    version: master
+
 - name: Symlink snapraid-runner to /usr/local/bin
   file:
     src: /opt/snapraid-runner/snapraid-runner
