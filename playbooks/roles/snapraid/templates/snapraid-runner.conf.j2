@@ -1,0 +1,8 @@
+snapraid_executable = /usr/bin/snapraid
+snapraid_conf = /etc/snapraid.conf
+touch_file = /var/run/snapraid.touch
+lock_file = /tmp/snapraid.lock
+email_to = {{ cron_email }}
+email_from = snapraid@{{ inventory_hostname }}
+smtp_server = {{ smtp_server }}
+smtp_port = {{ smtp_port }}
