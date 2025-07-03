@@ -41,3 +41,24 @@
     name: docker
     state: started
     enabled: true
+
+- name: Add users to Docker group
+  ansible.builtin.user:
+    name: "{{ item }}"
+    group: docker
+    append: true
+  loop: "{{ ansible_users }}"
+  when: ansible_users is defined and ansible_users | length > 0
+
+# Docker Compose files deployment
+- name: Deploy Main stack
+  include_tasks: deploy-compose.yml
+  vars:
+    compose_src: docker-compose-main.yml.j2
+    compose_dest: /opt/docker-compose.yml
+
+- name: Deploy Tailscale stack
+  include_tasks: deploy-compose.yml
+  vars:
+    compose_src: docker-compose-tailscale.yml.j2
+    compose_dest: /opt/appdata/tailscale/docker-compose.yml
