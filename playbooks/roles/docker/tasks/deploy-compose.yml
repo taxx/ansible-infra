@@ -1,0 +1,19 @@
+---
+- name: Check if {{ compose_dest }} exists
+  stat:
+    path: "{{ compose_dest }}"
+  register: compose_file
+
+- name: Create Docker Compose file if it does not exist
+  template:
+    src: "{{ compose_src }}"
+    dest: "{{ compose_dest }}"
+    owner: root
+    group: root
+    mode: '0744'
+    force: no
+  when: not compose_file.stat.exists
+
+- name: Start docker-compose stack
+  command: docker compose -f {{ compose_dest }} up -d
+  when: not compose_file.stat.exists
