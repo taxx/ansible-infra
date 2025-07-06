@@ -9,11 +9,13 @@
   args:
     executable: /bin/bash
 
-- name: Ensure remote_tmp directory exists for user {{ item }}
+- name: Ensure remote_tmp directory exists for user {{ user }}
   file:
-    path: "/home/{{ item }}/.ansible/tmp"
+    path: "/home/{{ user }}/.ansible/tmp"
     state: directory
-    owner: "{{ item }}"
-    group: "{{ item }}"
+    owner: "{{ user }}"
+    group: "{{ user }}"
     mode: '0700'
   loop: "{{ ansible_users }}"
+  loop_control:
+    loop_var: user
