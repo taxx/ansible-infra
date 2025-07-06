@@ -12,6 +12,9 @@
       - ca-certificates
       - htop
       - btop
+      - ethtool
+      - nmap
+      - ncdu
     state: present
     update_cache: yes
 
