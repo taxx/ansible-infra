@@ -15,6 +15,7 @@
       - ethtool
       - nmap
       - ncdu
+      - iperf3
     state: present
     update_cache: yes
 
