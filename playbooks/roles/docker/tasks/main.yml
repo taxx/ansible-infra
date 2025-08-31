@@ -50,6 +50,16 @@
   loop: "{{ ansible_users }}"
   when: ansible_users is defined and ansible_users | length > 0
 
+- name: Set environment variables in /etc/environment
+  copy:
+    dest: /etc/environment
+    content: |
+      PUID=1001
+      PGID=1001
+    owner: root
+    group: root
+    mode: '0644'
+
 # Docker Compose files deployment
 - name: Deploy Main stack
   include_tasks: deploy-compose.yml
