@@ -7,7 +7,6 @@
       - smartmontools
       - curl
       - git
-      - apt-key
       - gpg
       - lsb-release
       - apt-transport-https
